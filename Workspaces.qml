@@ -147,6 +147,34 @@ BarWidget {
           fixedHeight: root.barSize
           tooltipText: root.tooltipFor(cell.modelData, cell.monitorName, cell.placement)
           onPressed: function() { root.focusWorkspace(cell.modelData) }
+          // Nerd Font icons paint wider than their monospace advance, which the
+          // stock label centres off-axis; OpticalGlyph centres the painted ink.
+          labelVisible: false
+
+          TextMetrics {
+            id: inkMetrics
+            font.family: button.fontFamily
+            font.pixelSize: Math.max(1, Math.round(button.fontSize))
+            text: button.text
+          }
+
+          FontMetrics {
+            id: lineMetrics
+            font: inkMetrics.font
+          }
+
+          OpticalGlyph {
+            // Text centres on the font's line box; shift so the painted ink
+            // is vertically centred instead.
+            readonly property real inkCenterY: lineMetrics.ascent + inkMetrics.tightBoundingRect.y + inkMetrics.tightBoundingRect.height / 2
+            width: parent.width
+            height: parent.height
+            y: Math.round((lineMetrics.ascent + lineMetrics.descent) / 2 - inkCenterY)
+            text: button.text
+            fontFamily: button.fontFamily
+            fontSize: button.fontSize
+            color: button.foreground
+          }
         }
 
         // Monitor assignment line. A sibling of the button rather than a child
@@ -163,7 +191,7 @@ BarWidget {
             : (segment === "middle" ? (span - length) / 2 : 0)
 
           visible: edge !== ""
-          color: Color.accent
+          color: button.foreground
           radius: thickness / 2
           opacity: cell.visibleAnywhere ? 1 : root.dimmedLineOpacity
           width: alongWidth ? length : thickness

@@ -12,9 +12,10 @@ numbering, keybindings, and click behaviour, and adds:
   monitor has focus.
 - **Workspaces showing on other monitors are marked too.** They get an outlined
   square (󱓼).
-- **Every workspace shows which monitor it's on.** A thin accent line sits on the
-  edge of the workspace number that matches where its monitor is. The line is
-  full strength when the workspace is currently visible and dimmed otherwise.
+- **Every workspace shows which monitor it's on.** A thin line in the bar's text
+  colour sits on the edge of the workspace number that matches where its monitor
+  is. The line is full strength when the workspace is currently visible and
+  dimmed otherwise.
 - **Tooltips** name the monitor and its position, for example
   `Workspace 10 · DP-2 (top)`.
 
