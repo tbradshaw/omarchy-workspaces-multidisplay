@@ -19,8 +19,6 @@ numbering, keybindings, and click behaviour, and adds:
 - **Tooltips** name the monitor and its position, for example
   `Workspace 10 · DP-2 (top)`.
 
-<!-- TODO: preview.png -->
-
 ## How the lines map to monitors
 
 Each workspace cell acts as a tiny map of your monitor layout. Lines always sit
@@ -42,6 +40,13 @@ know about (empty and not persistent) has no monitor, so it gets no line.
 
 Every bar shows the same lines. Only the filled and outlined squares differ
 between bars.
+
+## Known limitations
+
+- A workspace shown on a monitor is drawn as a square instead of its number.
+  With three or more monitors, several numbers are replaced at once; the
+  tooltip still names each one.
+- Only workspaces 1–10 are shown, as in the stock widget.
 
 ## Requirements
 
