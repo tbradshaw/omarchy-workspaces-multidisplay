@@ -132,4 +132,6 @@ basecamp/omarchy#11976 and basecamp/omarchy#10190.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). `Workspaces.qml` is derived from Omarchy's
+`omarchy.workspaces` widget, copyright David Heinemeier Hansson, also under the
+MIT License.
