@@ -19,6 +19,8 @@ numbering, keybindings, and click behaviour, and adds:
 - **Tooltips** name the monitor and its position, for example
   `Workspace 10 · DP-2 (top)`.
 
+![Workspace bars for stacked and side-by-side monitors in the Tokyo Night, Osaka Jade, and Catppuccin Latte themes](preview.png)
+
 ## How the lines map to monitors
 
 Each workspace cell acts as a tiny map of your monitor layout. Lines always sit
