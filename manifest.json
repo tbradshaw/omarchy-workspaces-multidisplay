@@ -1,10 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "omarchy.workspaces",
-  "name": "Workspaces",
-  "version": "1.0.0",
-  "author": "Omarchy",
-  "description": "Workspace number indicators",
+  "id": "io.github.tbradshaw.workspaces-multidisplay",
+  "name": "Workspaces for Multiple Displays",
+  "version": "0.1.0",
+  "author": "Travis Bradshaw",
+  "license": "MIT",
+  "description": "Monitor-aware workspace indicators for the Omarchy bar",
   "kinds": [
     "bar-widget"
   ],
@@ -12,9 +13,13 @@
     "barWidget": "Workspaces.qml"
   },
   "barWidget": {
-    "displayName": "Workspaces",
-    "description": "Workspace number indicators",
+    "displayName": "Workspaces for Multiple Displays",
+    "description": "Shows each monitor's visible workspace and which monitor every workspace is on",
     "category": "Compositor",
+    "defaultSection": "left",
     "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.workspaces"
   }
 }
