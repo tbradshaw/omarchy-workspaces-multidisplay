@@ -66,12 +66,25 @@ on click, and doesn't change your Hyprland configuration.
 > Omarchy plugins run as unsandboxed code inside `omarchy-shell`. Review the
 > source before enabling it.
 
+Add the plugin, put it on the bar next to the stock widget, then turn the stock
+widget off:
+
 ```bash
-omarchy plugin add https://github.com/tbradshaw/omarchy-workspaces-multidisplay.git --enable
+omarchy plugin add https://github.com/tbradshaw/omarchy-workspaces-multidisplay.git
+omarchy plugin enable io.github.tbradshaw.workspaces-multidisplay --after omarchy.workspaces
+omarchy plugin disable omarchy.workspaces
 ```
 
-The plugin declares itself a replacement for `omarchy.workspaces`, so enabling
-it takes the stock widget's place on the bar and keeps its position.
+When `omarchy plugin add` asks whether to enable the plugin, answer no; the
+second command enables it in the right place.
+
+## Configure
+
+Move the widget like any other bar widget, for example:
+
+```bash
+omarchy bar move io.github.tbradshaw.workspaces-multidisplay --section center
+```
 
 ## Update
 
@@ -81,12 +94,14 @@ omarchy plugin update io.github.tbradshaw.workspaces-multidisplay
 
 ## Go back to the stock widget
 
+Turn the stock widget back on next to this one, then turn this one off:
+
 ```bash
+omarchy plugin enable omarchy.workspaces --after io.github.tbradshaw.workspaces-multidisplay
 omarchy plugin disable io.github.tbradshaw.workspaces-multidisplay
 ```
 
-Disabling puts `omarchy.workspaces` back where this widget was. To uninstall
-completely:
+To uninstall completely:
 
 ```bash
 omarchy plugin remove io.github.tbradshaw.workspaces-multidisplay
@@ -128,7 +143,8 @@ stock.
 ## Credits
 
 The per-monitor active workspace and the `moveworkspacev2` refresh follow
-basecamp/omarchy#11976 and basecamp/omarchy#10190.
+[omacom/omarchy#11976](https://github.com/omacom/omarchy/pull/11976) and
+[omacom/omarchy#10190](https://github.com/omacom/omarchy/pull/10190).
 
 ## License
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 (2026-09-24)
+
+- Install alongside the stock widget instead of declaring itself a clone of
+  it, following the Omarchy plugin publishing guide. The README describes how
+  to swap between the two.
+
 ## 0.1.0 (2026-09-24)
 
 - Initial release, based on Omarchy 4.0.4's `omarchy.workspaces` widget.

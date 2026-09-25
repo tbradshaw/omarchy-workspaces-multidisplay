@@ -14,7 +14,6 @@ jq -e '
   and .id == "io.github.tbradshaw.workspaces-multidisplay"
   and (.kinds | index("bar-widget") != null)
   and .entryPoints.barWidget == "Workspaces.qml"
-  and .omarchy.clonedFrom == "omarchy.workspaces"
 ' "$plugin_dir/manifest.json" >/dev/null
 
 module_name=$(sed -n 's/^  moduleName: "\(.*\)"$/\1/p' "$plugin_dir/Workspaces.qml")
