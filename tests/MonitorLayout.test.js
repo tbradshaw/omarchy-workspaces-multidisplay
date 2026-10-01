@@ -136,3 +136,17 @@ test("scaled stacked monitors are still stacked", () => {
   assert.equal(result.T.edge, "top")
   assert.equal(result.B.edge, "bottom")
 })
+
+test("next monitor follows Hyprland ID order and wraps", () => {
+  const monitors = [{ id: 2, name: "HDMI-A-1" }, { id: 0, name: "DP-2" }, { id: 1, name: "DP-3" }]
+  assert.equal(layout.nextMonitorName(monitors, "DP-2"), "DP-3")
+  assert.equal(layout.nextMonitorName(monitors, "DP-3"), "HDMI-A-1")
+  assert.equal(layout.nextMonitorName(monitors, "HDMI-A-1"), "DP-2")
+})
+
+test("no next monitor with one monitor or an unknown one", () => {
+  assert.equal(layout.nextMonitorName([{ id: 0, name: "DP-2" }], "DP-2"), "")
+  assert.equal(layout.nextMonitorName([{ id: 0, name: "DP-2" }, { id: 1, name: "DP-3" }], "HDMI-A-1"), "")
+  assert.equal(layout.nextMonitorName([], "DP-2"), "")
+  assert.equal(layout.nextMonitorName(null, "DP-2"), "")
+})

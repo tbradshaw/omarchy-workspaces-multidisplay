@@ -18,6 +18,11 @@ numbering, keybindings, and click behaviour, and adds:
   dimmed otherwise.
 - **Tooltips** name the monitor and its position, for example
   `Workspace 10 · DP-2 (top)`.
+- **Right-click a workspace to send it to the next monitor**, in Hyprland's
+  monitor order, wrapping back to the first. A workspace that is showing keeps
+  showing on its new monitor and takes focus with it; a hidden one stays
+  hidden. The monitor it leaves switches to another of its workspaces.
+  Right-clicking a workspace that doesn't exist yet does nothing.
 
 ![Workspace bars for stacked and side-by-side monitors in the Tokyo Night, Osaka Jade, and Catppuccin Latte themes](preview.png)
 
@@ -57,8 +62,9 @@ between bars.
 - A Nerd Font for the bar, which is the Omarchy default.
 
 The plugin has no other dependencies. It installs no packages, services, or
-hooks, runs no commands of its own besides the stock `hyprctl` focus dispatch
-on click, and doesn't change your Hyprland configuration.
+hooks, runs no commands of its own besides `hyprctl` dispatches to focus a
+workspace on click and move it to another monitor on right-click, and doesn't
+change your Hyprland configuration.
 
 ## Install
 

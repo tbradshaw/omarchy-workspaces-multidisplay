@@ -93,6 +93,36 @@ BarWidget {
     root.bar.run("hyprctl dispatch " + Util.shellQuote("hl.dsp.focus({ workspace = \"" + id + "\" })"))
   }
 
+  function dispatch(expression) {
+    return "hyprctl dispatch " + Util.shellQuote(expression)
+  }
+
+  // Sends a workspace to the next monitor in Hyprland's ID order. A visible
+  // workspace stays visible and takes focus with it. Hyprland only does that
+  // itself when the workspace leaves the focused monitor, so otherwise focus
+  // it explicitly after the move. A hidden workspace stays hidden.
+  function cycleWorkspaceMonitor(id) {
+    if (!root.bar) return
+    var workspace = root.workspaceById(id)
+    if (!workspace || !workspace.monitor) return
+
+    var monitors = []
+    var values = Hyprland.monitors.values
+    for (var i = 0; i < values.length; i++) monitors.push({ id: values[i].id, name: values[i].name })
+    var currentName = String(workspace.monitor.name || "")
+    var target = MonitorLayout.nextMonitorName(monitors, currentName)
+    if (target === "") return
+
+    var selector = JSON.stringify(String(id))
+    var command = root.dispatch("hl.dsp.workspace.move({ workspace = " + selector + ", monitor = " + JSON.stringify(target) + " })")
+
+    var visible = root.visibleWorkspaceIds.indexOf(id) !== -1
+    var focused = Hyprland.focusedMonitor ? String(Hyprland.focusedMonitor.name || "") : ""
+    if (visible && currentName !== focused) command += " && " + root.dispatch("hl.dsp.focus({ workspace = " + selector + " })")
+
+    root.bar.run(command)
+  }
+
   function tooltipFor(id, monitorName, placement) {
     var text = "Workspace " + id
     if (monitorName === "") return text
@@ -146,7 +176,10 @@ BarWidget {
           fixedWidth: root.vertical ? root.barSize : Style.space(20)
           fixedHeight: root.barSize
           tooltipText: root.tooltipFor(cell.modelData, cell.monitorName, cell.placement)
-          onPressed: function() { root.focusWorkspace(cell.modelData) }
+          onPressed: function(mouseButton) {
+            if (mouseButton === Qt.RightButton) root.cycleWorkspaceMonitor(cell.modelData)
+            else root.focusWorkspace(cell.modelData)
+          }
           // Nerd Font icons paint wider than their monospace advance, which the
           // stock label centres off-axis; OpticalGlyph centres the painted ink.
           labelVisible: false

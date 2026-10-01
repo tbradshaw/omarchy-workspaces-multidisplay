@@ -123,3 +123,22 @@ function placements(monitors, barPosition) {
 
   return result
 }
+
+// monitors: [{ id, name }]. Returns the name of the monitor after `currentName`
+// in Hyprland's monitor ID order, wrapping around, or "" when there is no
+// other monitor to move to.
+function nextMonitorName(monitors, currentName) {
+  var list = []
+  for (var i = 0; i < (monitors ? monitors.length : 0); i++) {
+    var m = monitors[i]
+    if (m && m.name) list.push(m)
+  }
+  list.sort(function(left, right) { return Number(left.id) - Number(right.id) })
+
+  for (var j = 0; j < list.length; j++) {
+    if (list[j].name !== currentName) continue
+    var next = list[(j + 1) % list.length]
+    return next.name === currentName ? "" : String(next.name)
+  }
+  return ""
+}

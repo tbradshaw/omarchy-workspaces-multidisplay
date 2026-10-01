@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Right-click a workspace to send it to the next monitor. A visible workspace
+  stays visible and takes focus with it; a hidden one stays hidden.
+
 ## 0.1.1 (2026-09-24)
 
 - Install alongside the stock widget instead of declaring itself a clone of
