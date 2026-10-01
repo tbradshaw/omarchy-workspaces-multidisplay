@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (2026-09-30)
 
 - Right-click a workspace to send it to the next monitor. A visible workspace
   stays visible and takes focus with it; a hidden one stays hidden.
