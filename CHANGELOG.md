@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Give individual workspaces their own icon and tooltip name with the
+  `workspaces` setting, and optionally keep them listed while empty. A
+  workspace with an icon keeps it while on screen, with a filled or outlined
+  pill marking where it's shown.
+
 ## 0.2.0 (2026-09-30)
 
 - Right-click a workspace to send it to the next monitor. A visible workspace

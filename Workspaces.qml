@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import qs.Commons
 import qs.Ui
 import "MonitorLayout.js" as MonitorLayout
+import "WorkspaceOverrides.js" as WorkspaceOverrides
 
 BarWidget {
   id: root
@@ -15,6 +16,9 @@ BarWidget {
   readonly property string activeGlyph: "\uDB85\uDCFB"
   readonly property string otherMonitorGlyph: "\uDB85\uDCFC"
   readonly property real dimmedLineOpacity: 0.35
+  readonly property real activePillAlpha: 0.22
+
+  readonly property var overrides: WorkspaceOverrides.normalize(root.setting("workspaces", {}))
 
   // Every monitor has its own bar, so each instance marks the workspace shown
   // on its own monitor rather than the one that currently has focus.
@@ -76,16 +80,10 @@ BarWidget {
   }
 
   function workspaceIds() {
-    var ids = [1, 2, 3, 4, 5]
+    var existing = []
     var values = Hyprland.workspaces.values
-
-    for (var i = 0; i < values.length; i++) {
-      var id = values[i].id
-      if (id > 0 && id <= 10 && ids.indexOf(id) === -1) ids.push(id)
-    }
-
-    ids.sort(function(left, right) { return left - right })
-    return ids
+    for (var i = 0; i < values.length; i++) existing.push(values[i].id)
+    return WorkspaceOverrides.workspaceIds(existing, root.overrides)
   }
 
   function focusWorkspace(id) {
@@ -123,8 +121,9 @@ BarWidget {
     root.bar.run(command)
   }
 
-  function tooltipFor(id, monitorName, placement) {
+  function tooltipFor(id, name, monitorName, placement) {
     var text = "Workspace " + id
+    if (name !== "") text += " · " + name
     if (monitorName === "") return text
     text += " · " + monitorName
     if (placement && placement.label) text += " (" + placement.label + ")"
@@ -159,15 +158,39 @@ BarWidget {
         readonly property bool visibleElsewhere: visibleAnywhere && !activeHere
         readonly property string monitorName: workspace !== null && workspace.monitor ? String(workspace.monitor.name || "") : ""
         readonly property var placement: monitorName !== "" ? (root.placements[monitorName] || null) : null
+        readonly property var overrideEntry: root.overrides[modelData] || null
+        readonly property string icon: overrideEntry ? overrideEntry.icon : ""
+        readonly property string workspaceName: overrideEntry ? overrideEntry.name : ""
 
         implicitWidth: button.implicitWidth
         implicitHeight: button.implicitHeight
+
+        // A workspace with its own icon keeps it while visible, so a pill
+        // behind it takes the place of the square glyphs: filled on this
+        // bar's monitor, outlined on another. It sits inside the monitor line
+        // and, like the line, is a sibling so the button's opacity doesn't
+        // compound with it.
+        Rectangle {
+          readonly property real alongInset: Style.space(1)
+          readonly property real crossInset: Style.space(6)
+          readonly property real maxLength: Style.space(18)
+
+          visible: cell.icon !== "" && cell.visibleAnywhere
+          anchors.centerIn: parent
+          width: root.vertical ? cell.width - crossInset * 2 : Math.min(maxLength, cell.width - alongInset * 2)
+          height: root.vertical ? Math.min(maxLength, cell.height - alongInset * 2) : cell.height - crossInset * 2
+          radius: Style.space(4)
+          color: cell.activeHere ? Qt.alpha(button.foreground, root.activePillAlpha) : "transparent"
+          border.width: cell.visibleElsewhere ? Math.max(1, Style.space(1)) : 0
+          border.color: button.foreground
+        }
 
         WidgetButton {
           id: button
           anchors.fill: parent
           bar: root.bar
-          text: cell.activeHere ? root.activeGlyph
+          text: cell.icon !== "" ? cell.icon
+            : cell.activeHere ? root.activeGlyph
             : (cell.visibleElsewhere ? root.otherMonitorGlyph
               : (cell.modelData === 10 ? "0" : String(cell.modelData)))
           opacity: cell.occupied || cell.visibleAnywhere ? 1 : 0.5
@@ -175,7 +198,7 @@ BarWidget {
           verticalPadding: 6
           fixedWidth: root.vertical ? root.barSize : Style.space(20)
           fixedHeight: root.barSize
-          tooltipText: root.tooltipFor(cell.modelData, cell.monitorName, cell.placement)
+          tooltipText: root.tooltipFor(cell.modelData, cell.workspaceName, cell.monitorName, cell.placement)
           onPressed: function(mouseButton) {
             if (mouseButton === Qt.RightButton) root.cycleWorkspaceMonitor(cell.modelData)
             else root.focusWorkspace(cell.modelData)

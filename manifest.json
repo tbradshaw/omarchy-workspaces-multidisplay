@@ -17,6 +17,9 @@
     "description": "Shows each monitor's visible workspace and which monitor every workspace is on",
     "category": "Compositor",
     "defaultSection": "left",
-    "allowMultiple": false
+    "allowMultiple": false,
+    "defaults": {
+      "workspaces": {}
+    }
   }
 }

@@ -18,6 +18,8 @@ numbering, keybindings, and click behaviour, and adds:
   dimmed otherwise.
 - **Tooltips** name the monitor and its position, for example
   `Workspace 10 · DP-2 (top)`.
+- **Optional icons and names for individual workspaces**, for workspaces you
+  keep for one purpose. See [Workspace icons and names](#workspace-icons-and-names).
 - **Right-click a workspace to send it to the next monitor**, in Hyprland's
   monitor order, wrapping back to the first. A workspace that is showing keeps
   showing on its new monitor and takes focus with it; a hidden one stays
@@ -42,17 +44,18 @@ between two neighbouring numbers.
 On a left or right bar the axes swap. Side-by-side monitors get a full line on
 the left or right edge, and stacked monitors get the upper or lower half.
 
-Workspaces 1–5 are always listed. A workspace that Hyprland doesn't currently
-know about (empty and not persistent) has no monitor, so it gets no line.
+Workspaces 1–5 are always listed, as are any set to `alwaysShow`. A workspace
+that Hyprland doesn't currently know about (empty and not persistent) has no
+monitor, so it gets no line.
 
-Every bar shows the same lines. Only the filled and outlined squares differ
+Every bar shows the same lines. Only the filled and outlined markers differ
 between bars.
 
 ## Known limitations
 
-- A workspace shown on a monitor is drawn as a square instead of its number.
-  With three or more monitors, several numbers are replaced at once; the
-  tooltip still names each one.
+- A workspace shown on a monitor is drawn as a square instead of its number,
+  unless it has its own icon. With three or more monitors, several numbers are
+  replaced at once; the tooltip still names each one.
 - Only workspaces 1–10 are shown, as in the stock widget.
 
 ## Requirements
@@ -92,6 +95,38 @@ Move the widget like any other bar widget, for example:
 omarchy bar move io.github.tbradshaw.workspaces-multidisplay --section center
 ```
 
+### Workspace icons and names
+
+The `workspaces` setting gives individual workspaces their own look. It is
+keyed by workspace number, from `1` to `10`, and each entry can set:
+
+| Field | Default | Effect |
+|---|---|---|
+| `icon` | none | Drawn instead of the number. Any text works: a Nerd Font icon, an emoji, a letter. |
+| `name` | none | Added to the tooltip, for example `Workspace 9 · Automation · DP-2 (top)`. |
+| `alwaysShow` | `false` | List the workspace even while it's empty, as workspaces 1–5 always are. |
+
+For example, to give workspace 9 a robot and workspace 10 the Battlestation
+icon, and keep both on the bar:
+
+```bash
+omarchy bar set io.github.tbradshaw.workspaces-multidisplay workspaces \
+  '{"9":{"icon":"󰚩","name":"Automation","alwaysShow":true},"10":{"icon":"󰣙","name":"Battlestation","alwaysShow":true}}' --json
+```
+
+A workspace with an icon keeps showing it while it's on screen. A filled pill
+behind the icon marks it as the workspace shown on that bar's monitor, and an
+outlined pill marks it as shown on another monitor. The monitor line works as
+for any other workspace.
+
+Keybindings and workspace numbers don't change, so `Super+9` and `Super+0`
+still switch to workspaces 9 and 10. Nerd Font icons follow the bar's theme
+colour. Emoji keep their own colours.
+
+Each `omarchy bar set` replaces the whole `workspaces` value. To change one
+workspace, pass the full set again, or edit the widget's entry in
+`~/.config/omarchy/shell.json`.
+
 ## Update
 
 ```bash
@@ -116,11 +151,12 @@ omarchy plugin remove io.github.tbradshaw.workspaces-multidisplay
 ## Development
 
 The widget is `Workspaces.qml`. The mapping from monitor geometry to line
-placement lives in `MonitorLayout.js`, a plain QML JavaScript library, so it can
-be tested without the shell.
+placement lives in `MonitorLayout.js`, and reading the `workspaces` setting
+lives in `WorkspaceOverrides.js`. Both are plain QML JavaScript libraries, so
+they can be tested without the shell.
 
 Run the static checks. They validate the manifest, lint the QML against the
-installed Omarchy shell, and run the layout tests with Node. None of them load
+installed Omarchy shell, and run the library tests with Node. None of them load
 the plugin into the running shell.
 
 ```bash
@@ -133,14 +169,17 @@ plugin:
 ```bash
 dest=~/.config/omarchy/plugins/io.github.tbradshaw.workspaces-multidisplay
 mkdir -p "$dest"
-cp manifest.json Workspaces.qml MonitorLayout.js "$dest/"
+cp manifest.json Workspaces.qml MonitorLayout.js WorkspaceOverrides.js "$dest/"
 omarchy-shell shell rescanPlugins
 omarchy plugin enable io.github.tbradshaw.workspaces-multidisplay
 ```
 
-The shell reloads plugins whenever a file under `~/.config/omarchy/plugins/`
-changes. Copying files in one step, rather than symlinking the plugin
-directory to a working copy, keeps half-finished edits off your bar.
+The shell rebuilds the widget whenever a file under
+`~/.config/omarchy/plugins/` changes, but it keeps using the QML and
+JavaScript it has already compiled. After copying changed code, run
+`omarchy restart shell` to load it. Copying files in one step, rather than
+symlinking the plugin directory to a working copy, keeps half-finished edits
+off your bar.
 
 The first commit in this repository is an unmodified copy of Omarchy 4.0.4's
 `omarchy.workspaces` widget, so `git diff` against it shows every change from
