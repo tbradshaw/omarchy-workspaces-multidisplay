@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (2026-10-08)
 
 - Give individual workspaces their own icon and tooltip name with the
   `workspaces` setting, and optionally keep them listed while empty. A

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.tbradshaw.workspaces-multidisplay",
   "name": "Workspaces for Multiple Displays",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Travis Bradshaw",
   "license": "MIT",
   "description": "Monitor-aware workspace indicators for the Omarchy bar",
